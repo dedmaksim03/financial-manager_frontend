@@ -1,8 +1,11 @@
 import React, {useState} from 'react'
-import { getToken } from '../service/UserService'
 import { useNavigate } from 'react-router-dom'
+import { AuthStoreProvider, useAuthStore } from '../stores/AuthStore/AuthStoreProvider';
+import { observer } from "mobx-react-lite";
 
-const LoginPage = () => {
+const LoginPage = observer(() => {
+    const authStore = useAuthStore();
+
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
@@ -16,19 +19,17 @@ const LoginPage = () => {
         setPassword(e.target.value);
     }
 
-    function login(e){
+    async function login(e){
         e.preventDefault();
 
         const user = {username, password}
         console.log(user);
 
-        getToken(user).then((response) => {
-            if (response != null){
-                console.log(response.data);
-                navigator("/");
-            }          
-        })
+        await authStore.login(username, password);
 
+        console.log(authStore.token);
+
+        navigator("/home");
     }
 
   return (
@@ -68,6 +69,6 @@ const LoginPage = () => {
       </div>
     </div>
   )
-}
+});
 
 export default LoginPage
