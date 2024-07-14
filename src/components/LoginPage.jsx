@@ -1,36 +1,37 @@
-import React, {Component} from 'react'
-import AuthStore from './store'
+import React, {useState} from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AuthStoreProvider, useAuthStore } from '../stores/AuthStore/AuthStoreProvider';
+import { observer } from "mobx-react-lite";
 
-class LoginPage extends Component{
-    constructor(props){
-        super(props);
+const LoginPage = observer(() => {
+    const authStore = useAuthStore();
 
-        this.state = {
-            username: '',
-            password: ''
-        };
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
 
+    const navigator = useNavigate();
+
+    function handleUsername(e){
+        setUsername(e.target.value);
     }
 
-    handleUsername(event){
-        this.setState({username: event.target.value});
-        console.log(this.state.username);
+    function handlePassword(e){
+        setPassword(e.target.value);
     }
 
-    handlePassword(event){
-        this.setState({password: event.target.value})
+    async function login(e){
+        e.preventDefault();
+
+        const user = {username, password}
+        console.log(user);
+
+        await authStore.login(username, password);
+
+        navigator("/home");
     }
 
-    login(event){
-        event.preventDefault();
-        console.log(this.state);
-        AuthStore.login(this.state.username, this.state.password);
-        console.log(localStorage.getItem('token'));
-    }
-
-    render(){
-        return(
-            <div className='container'>
+  return (
+    <div className='container'>
         <br/><br/>
       <div className='card col-md-6 offset-md-3 offset-md-3'>
         <h2 className='text-center'>Login</h2>
@@ -41,10 +42,10 @@ class LoginPage extends Component{
                     <input
                         type='text'
                         placeholder='Гоша'
-                        name='username'
-                        value={this.username}
+                        name='userName'
+                        value={username}
                         className='form-control'
-                        onChange={this.handleUsername.bind(this)}
+                        onChange={handleUsername}
                     ></input>
                 </div>
 
@@ -54,19 +55,18 @@ class LoginPage extends Component{
                         type='password'
                         placeholder='1234'
                         name='password'
-                        value={this.password}
+                        value={password}
                         className='form-control'
-                        onChange={this.handlePassword.bind(this)}
+                        onChange={handlePassword}
                     ></input>
                 </div>
 
-                <button className='btn btn-success' onClick={this.login.bind(this)}>Войти</button>
+                <button className='btn btn-success' onClick={login}>Войти</button>
             </form>
         </div>
       </div>
     </div>
-        );
-    }
-}
+  )
+});
 
-export default LoginPage;
+export default LoginPage

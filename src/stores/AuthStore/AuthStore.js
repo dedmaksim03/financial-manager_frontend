@@ -1,12 +1,12 @@
 import React from "react";
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable, runInAction } from "mobx";
 import AuthService from "../../api/AuthService";
 import DataService from "../../api/DataService";
 
 class AuthStore { 
     isAuthInProgress = false;
 
-    token = null;
+    isAuth = false;
 
     allData = null;
 
@@ -18,9 +18,9 @@ class AuthStore {
         this.isAuthInProgress = true;
         try{
             const response = await AuthService.login(username, password);
-            this.token = response.data.token;
-            console.log(this.token);
-            // localStorage.setItem("token", response.data.token);
+            localStorage.setItem("token", response.data.token);
+            console.log(localStorage.getItem("token"));
+            this.isAuth = true;
         } catch(err){
             console.log(err);
         } finally {
@@ -30,19 +30,31 @@ class AuthStore {
 
     async getData(){
         console.log('load data')
-        if (this.token == null)
-            return null;
         try{
-            const response = await DataService.getAllData(this.token);
+            const response = await DataService.getAllData();
             console.log(response.data);
-            this.allData = response.data;
-            this.test = 1;
+
+            runInAction(() => {
+                this.allData = response.data;
+            })
+
+            this.setAllData(response.data);
+            this.isAuth = true;
             return response
-            // localStorage.setItem("userData", response.data['data'][0]['account']);
-            // console.log(localStorage.getItem('userData'))
         } catch(err){
+            localStorage.removeItem("token");
+            this.isAuth = false;
+            runInAction(() => {
+                this.allData = null;
+            })
+            this.setAllData(null);
             console.log(err);
+            return err;
         } 
+    }
+
+    setAllData = (allData) => {
+        this.allData = allData;
     }
     
 }

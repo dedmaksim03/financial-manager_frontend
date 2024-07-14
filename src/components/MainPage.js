@@ -25,7 +25,8 @@ function Clock(){
 
     return(
         <div>
-            Сейчас: {time.toLocaleTimeString()}
+            <p>Сейчас: {time.toLocaleTimeString()}</p>
+            <p>Данные из localStorage: {localStorage.getItem("token")}</p>
         </div>
     )
 }

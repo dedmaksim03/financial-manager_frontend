@@ -2,15 +2,8 @@ import { instance } from "./config";
 
 const AuthService = {
     
-    getAllData(token){
-
-        // instance.interceptors.request.use(
-        //     (config) => {
-        //         config.headers.Authorization = `Bearer ${token}`;
-        //         return config;
-        //     }
-        // )
-
+    getAllData(){
+        let token = localStorage.getItem("token") == null ? '' : localStorage.getItem("token");
         return instance.get("/users/info", {
             headers: {
               Authorization: 'Bearer ' + token //the token is a variable which holds the token
