@@ -2,20 +2,23 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/AuthStore/AuthStoreProvider';
 import { observer } from 'mobx-react-lite';
+import './css/MainUserPage.css'
 
 const GetUserData = observer((props) => {
   let arr = props.authStore.allData?.data;
   const listItems = arr?.map((arr) => 
-    <li key={arr?.id}>
+    <p key={arr?.id}>
       {JSON.stringify(arr)}
-    </li>
+    </p>
   );
 
   return(
     <div>
-      <h2>Данные</h2> 
-      <p>Пользователь: {JSON.stringify(props.authStore.allData?.username)}</p>
-      <ul>{listItems}</ul>
+        <h2>Данные</h2> 
+        <p>Пользователь: {JSON.stringify(props.authStore.allData?.username)}</p>
+        <div className='text-center'>        
+          <div>{listItems}</div>
+      </div>
     </div>
   )
 })

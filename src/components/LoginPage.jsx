@@ -27,12 +27,11 @@ const LoginPage = observer(() => {
 
         await authStore.login(username, password);
 
-        navigator("/home");
+        navigator("/");
     }
 
   return (
-    <div className='container'>
-        <br/><br/>
+    <div className=''>
       <div className='card col-md-6 offset-md-3 offset-md-3'>
         <h2 className='text-center'>Login</h2>
         <div className='card-body'>
